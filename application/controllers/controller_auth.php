@@ -19,10 +19,10 @@ class Controller_Auth extends Controller
     function action_auth()
     {
         if ($_POST['operation'] =='auth'){
-            $name = filter_input(INPUT_POST, 'add_name');
+            $login = filter_input(INPUT_POST, 'add_login');
             $pass = filter_input(INPUT_POST, 'add_pass');
             $user = new \Application\Models\User();
-            $user->setName($name);
+            $user->setLogin($login);
             $user->setPass($pass);
             $result = $user->tryAuth();
 

@@ -33,13 +33,13 @@ class User
     }
 
     /**
-     * устанавливает объекту значение свойства $name
+     * устанавливает объекту значение свойства $login
      *
      * @param string $name - имя пользователя
      * @return void
      */
-    public function setName($name){
-        $this->name = $name;
+    public function setName($login){
+        $this->login = $login;
     }
 
     /**
@@ -48,13 +48,13 @@ class User
      */
     public function checkData()
     {
-        $this->name=stripslashes($this->name);
-        $this->name=htmlspecialchars($this->name);
+        $this->name=stripslashes($this->login);
+        $this->name=htmlspecialchars($this->login);
         $this->password=stripslashes($this->password);
         $this->password=htmlspecialchars($this->password);
         $result = array();
-        if (empty($this->name)){
-            $result['errors']['emptyName'] = "Введите имя";
+        if (empty($this->login)){
+            $result['errors']['emptyName'] = "Введите Логин";
             return $result;
         }
 
@@ -65,14 +65,14 @@ class User
 
         $querry = "SELECT *  
                    FROM $this->table
-                   WHERE   name = '$this->name'
+                   WHERE   name = '$this->login'
                 ;";
 
         $result = $this->adapter->sqlExec($querry);
         $result = $result->fetchAll();
 
         if (empty($result)){
-            $result['errors']['emptyUser'] = "Пользователя с таким именем не существует";
+            $result['errors']['emptyUser'] = "Пользователя с таким Логином не существует";
             return $result;
         }
 

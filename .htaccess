@@ -1,0 +1,50 @@
+﻿AddDefaultCharset Off
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresDefault "access plus 1 month"
+
+ExpiresByType image/gif "access plus 2 months"
+ExpiresByType image/jpeg "access plus 2 months"
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag magic_quotes_gpc off
+    php_flag magic_quotes_runtime off
+    php_flag register_globals off
+    php_flag display_errors on
+</IfModule>
+
+<IfModule mod_dir.c>
+    DirectoryIndex index.php index.htm index.html
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} profhairsmag\.ru$
+RewriteRule ^(robots.txt)$ /robots.txt [L]
+RewriteCond %{HTTP_HOST} krasnodar\.profhairsmag\.ru$
+RewriteRule ^(robots.txt)$ /robots-kr.txt [L]
+  RewriteCond %{HTTP_HOST} rebrand\.profhairsmag\.ru$
+RewriteRule ^(robots.txt)$ /robots-r.txt [L]
+
+    #RewriteBase /
+    RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+
+    RewriteRule ^(robots.txt)$ $1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !\..+$
+RewriteCond %{REQUEST_URI} !/$
+
+
+    RewriteCond %{HTTP:Authorization} ^Basic.*
+    RewriteRule ^(.*)$ index.php?http_authorization=%{HTTP:Authorization} [QSA,L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+#Запрещаем открывать файлы напрямую
+<Files ~ "(\.inc\.php|\.tpl|\.tpl\.php|\.auto\.php)$">
+    Order allow,deny
+    Deny from all
+</Files>

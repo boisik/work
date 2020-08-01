@@ -15,8 +15,10 @@ class User
     private
         $adapter,
         $password,
+        $login,
         $name,
         $table = "users";
+
     function __construct()
     {
         $this->adapter = new \Application\Core\Adapter();
@@ -38,9 +40,19 @@ class User
      * @param string $name - имя пользователя
      * @return void
      */
-    public function setName($login){
+    public function setLogin($login){
         $this->login = $login;
     }
+
+    /**
+     * устанавливает объекту заничение свойства $password
+     *
+     * @param string $password - пароль в открытом виде
+     * @return void
+     */
+    public function setName($name){
+        $this->name = $name;
+}
 
     /**
      * Проверка введенных данных
@@ -48,13 +60,20 @@ class User
      */
     public function checkData()
     {
-        $this->name=stripslashes($this->login);
-        $this->name=htmlspecialchars($this->login);
+        $this->name=stripslashes($this->name);
+        $this->name=htmlspecialchars($this->name);
+        $this->login=stripslashes($this->login);
+        $this->login=htmlspecialchars($this->login);
         $this->password=stripslashes($this->password);
         $this->password=htmlspecialchars($this->password);
         $result = array();
         if (empty($this->login)){
             $result['errors']['emptyName'] = "Введите Логин";
+            return $result;
+        }
+
+        if (empty($this->login)){
+            $result['errors']['emptyName'] = "Введите Имя";
             return $result;
         }
 

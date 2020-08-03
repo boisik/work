@@ -9,7 +9,7 @@ use Application\Core\Route;
 use Application\Models\User;
 ?>
 <html lang="en" class="no-js">
-<title>BJ test</title>
+<title>WORK test</title>
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

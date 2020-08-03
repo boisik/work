@@ -7,10 +7,10 @@
  */
 
 use Application\Core\Controller;
-class Controller_Main extends Controller
+class ControllerMain extends Controller
 {
 
-    function action_index()
+    function actionIndex()
     {
 
         header("Location:".'/task');

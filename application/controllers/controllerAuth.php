@@ -7,16 +7,16 @@
  */
 use Application\Core\Controller;
 
-class Controller_Auth extends Controller
+class ControllerAuth extends Controller
 {
 
 
-    function action_index()
+    function actionIndex()
     {
-        $this->view->generate('auth_view.php', 'template_view.php');
+        $this->view->generate('authView.php', 'templateView.php');
     }
 
-    function action_auth()
+    function actionAuth()
     {
         if ($_POST['operation'] =='auth'){
             $login = filter_input(INPUT_POST, 'add_login');
@@ -26,14 +26,14 @@ class Controller_Auth extends Controller
             $user->setPass($pass);
             $result = $user->tryAuth();
 
-            $this->view->generate('result_view.php', 'answer_view.php',$result);
+            $this->view->generate('resultView.php', 'answerView.php',$result);
 
         }
 
     }
 
 
-    function action_logout()
+    function actionLogout()
     {
         $user = new \Application\Models\User();
         $user->logOut();

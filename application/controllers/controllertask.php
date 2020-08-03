@@ -9,12 +9,12 @@
 use Application\Core\Controller;
 use Application\Models\User;
 use Application\Core\Route;
-class Controller_Task extends Controller
+class ControllerTask extends Controller
 {
 
 
 
-    function action_index()
+    function actionIndex()
     {
         $taskApi = new Application\Models\Taskapi();
         $page = isset($_GET['page']) ? $_GET['page'] : "0";
@@ -29,10 +29,10 @@ class Controller_Task extends Controller
         $result['page'] = $page;
         $result['columnName'] = $columnName;
         $result['paginator'] = $paginator/3;
-        $this->view->generate('tasklist_view.php', 'template_view.php',$result);
+        $this->view->generate('tasklistView.php', 'templateView.php',$result);
     }
 
-    function action_addTask()
+    function actionAddTask()
     {
         if ($_POST['operation'] =='addtask'){
             //var_dump($_POST);
@@ -45,14 +45,14 @@ class Controller_Task extends Controller
             $task->addText($text);
             $result = $task->create();
 
-            $this->view->generate('result_view.php', 'answer_view.php',$result);
+            $this->view->generate('resultView.php', 'answerView.php',$result);
 
         }else{
-            $this->view->generate('addtask_view.php', 'template_view.php');
+            $this->view->generate('addtaskView.php', 'templateView.php');
         }
     }
 
-    function action_editTask()
+    function actionEditTask()
     {
         if(!User::isAuth()) Route::ErrorPage403();
 
@@ -72,10 +72,10 @@ class Controller_Task extends Controller
             $taskModified->addText($text);
             $result = $taskModified->update($task);
 
-            $this->view->generate('result_view.php', 'answer_view.php',$result);
+            $this->view->generate('resultView.php', 'answerView.php',$result);
 
         }else{
-            $this->view->generate('edittask_view.php', 'template_view.php',$task);
+            $this->view->generate('edittaskView.php', 'templateView.php',$task);
         }
     }
 }

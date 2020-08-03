@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.7
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Июн 18 2020 г., 15:31
--- Версия сервера: 5.6.38
--- Версия PHP: 7.2.0
+-- Время создания: Авг 03 2020 г., 06:18
+-- Версия сервера: 10.3.22-MariaDB
+-- Версия PHP: 7.3.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -25,6 +24,18 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `orders`
+--
+
+CREATE TABLE `orders` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `price` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `tasks`
 --
 
@@ -33,8 +44,8 @@ CREATE TABLE `tasks` (
   `username` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
   `useremail` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `text` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` tinyint(1) DEFAULT '0',
-  `edited` tinyint(1) NOT NULL DEFAULT '0'
+  `status` tinyint(1) DEFAULT 0,
+  `edited` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -58,21 +69,27 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `name` varchar(9) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `hash` varchar(20) DEFAULT NULL,
-  `ip` varchar(10) NOT NULL
+  `login` varchar(10) DEFAULT NULL,
+  `email` varchar(55) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `password`, `hash`, `ip`) VALUES
-(1, 'yashka', 'c64be1bdd5440a33281f7d147dd0e6e5', '7YSj9r1', '127.0.0.1'),
-(2, 'admin', '49dc1dadcd922af42d22b5399b5566b8', '7YSj9r1', '127.0.0.1');
+INSERT INTO `users` (`id`, `name`, `password`, `login`, `email`) VALUES
+(1, 'yashka', 'c64be1bdd5440a33281f7d147dd0e6e5', NULL, ''),
+(6, '1111', 'e6f8005e935f529e6de56504b6bfe90d', NULL, 'dcsfd2ffg@vrvr.r4r');
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `tasks`
@@ -91,6 +108,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT для таблицы `tasks`
 --
 ALTER TABLE `tasks`
@@ -100,7 +123,7 @@ ALTER TABLE `tasks`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

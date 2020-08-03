@@ -17,6 +17,7 @@ class User
         $password,
         $login,
         $name,
+        $email,
         $table = "users";
 
     function __construct()
@@ -52,55 +53,59 @@ class User
      */
     public function setName($name){
         $this->name = $name;
-}
+    }
+
+    public function setEmail($email){
+        $this->email = $email;
+    }
 
     /**
-     * Проверка введенных данных
+     * Проверка базовых введенных данных
      * @return array|boolean
      */
-    public function checkData()
+    public function checkBaseData()
     {
-        $this->name=stripslashes($this->name);
-        $this->name=htmlspecialchars($this->name);
-        $this->login=stripslashes($this->login);
-        $this->login=htmlspecialchars($this->login);
-        $this->password=stripslashes($this->password);
-        $this->password=htmlspecialchars($this->password);
+
+        $this->login = stripslashes($this->login);
+        $this->login = htmlspecialchars($this->login);
+        $this->password = stripslashes($this->password);
+        $this->password = htmlspecialchars($this->password);
+
         $result = array();
-        if (empty($this->login)){
-            $result['errors']['emptyName'] = "Введите Логин";
+        if (empty($this->login)) {
+            $result['errors']['emptyLogin'] = "Введите Логин";
             return $result;
         }
 
-        if (empty($this->login)){
-            $result['errors']['emptyName'] = "Введите Имя";
-            return $result;
-        }
 
-        if (empty($this->password)){
+        if (empty($this->password)) {
             $result['errors']['emptyPass'] = "Введите пароль";
             return $result;
         }
-
-        $querry = "SELECT *  
-                   FROM $this->table
-                   WHERE   name = '$this->login'
-                ;";
-
-        $result = $this->adapter->sqlExec($querry);
-        $result = $result->fetchAll();
-
-        if (empty($result)){
-            $result['errors']['emptyUser'] = "Пользователя с таким Логином не существует";
-            return $result;
-        }
-
-        if($result[0]['password'] != $this->cryptPass($this->password)){
-            $result['errors']['wrongPass'] = "Пароль указан неверно";
-        }
-
         $result['noErrors'] = !isset($result['errors']) ? true : false;
         return $result;
+    }
+    /**
+     * Дальнейшая проверка данных, необходима для авторизации
+     * @return array|boolean
+     */
+    public function checkAuthData($validationResult)
+    {
+       $userExist = $this->userExist();
+
+        if (empty($userExist)){
+            $validationResult['errors']['emptyUser'] = "Пользователя с таким Логином не существует";
+            return $validationResult;
+        }
+
+        if($userExist[0]['password'] != $this->cryptPass($this->password)){
+            var_dump($userExist[0]['password']);
+            var_dump($this->cryptPass($this->password));
+            $validationResult['errors']['wrongPass'] = "Пароль указан неверно";
+        }
+
+        $validationResult['noErrors'] = !isset($validationResult['errors']) ? true : false;
+        return $validationResult;
     }
 
     /**
@@ -109,14 +114,16 @@ class User
      */
     function  tryAuth()
     {
-        $validationResult = $this->checkData();
-
+        $validationResult = $this->checkBaseData();
+        if ($validationResult['noErrors'] == true){
+            $validationResult = $this->checkAuthData($validationResult);
+        }
         if ($validationResult['noErrors'] == true){
 
             $hash = Helper::generateCode();
-            $this->updateUserHash($hash);
+
             setcookie("user_hash", $hash, time()+60*60*24*30, "/", null, null, true); // httponly !!!
-        return $result['OK']= 'Авторизация прошла успешно';
+        return $validationResult['OK']= 'Авторизация прошла успешно';
         }
         return $validationResult['errors'];
     }
@@ -140,38 +147,49 @@ class User
        return $result = isset($_COOKIE['user_hash']) ? true : false;
     }
 
-    /**
-     * обновляется хеш в таблице пользователей и ip последней авторизации
-     * @param string $hash - случайная строка
-     */
-    function updateUserHash($hash)
+
+
+    public function createUser()
     {
+        $validationResult = $this->checkBaseData();
+        $userExist = $this->userExist();
+        $this->email = stripslashes($this->email);
+        $this->email = htmlspecialchars($this->email);
+        $this->name = stripslashes($this->name);
+        $this->name = htmlspecialchars($this->name);
+        if (empty($this->email) || !preg_match('/^.+\@\S+\.\S+$/', $this->email)) {
+            $validationResult['errors']['emptyEmail'] = "Введите корректный Адрес электронной почты";
+            return $validationResult['errors'];
+        }
 
-        $querry = "UPDATE  $this->table
+        if (empty($this->name)) {
+            $validationResult['errors']['emptyName'] = "Введите Имя";
+            return $validationResult['errors'];
+        }
+        if (!empty($userExist)){
+            $validationResult['errors']['UserExist'] = "Логин занят другим пользователем";
+            return $validationResult['errors'];
+        }
+        $validationResult['noErrors'] = !isset($validationResult['errors']) ? true : false;
+        if ($validationResult['noErrors'] == true){
+
+            $pass = $this->cryptPass($this->password);
+
+            $querry = "INSERT INTO $this->table
                    SET
-                   
-                   hash = '".$hash."',
-                   ip   = '".$_SERVER['REMOTE_ADDR']."'              
-                  
-                  ;";
-        $this->adapter->sqlExec($querry);
-    }
-
-    public function create()
-    {
-        $pass = $this->cryptPass($this->password);
-
-        $querry = "INSERT INTO $this->table
-                   SET
-                   
+                   email = '$this->email',
+                   login = '$this->login',
                    name = '$this->name',
                    password   = '$pass'              
                   
                   ;";
 
-        $result = $this->adapter->sqlExec($querry);
+            $result = $this->adapter->sqlExec($querry);
+            return $validationResult['OK']= 'Регистрация прошла успешно';
+        }
+        return $validationResult['errors'];
 
-        return $result;
+
     }
 
 
@@ -185,6 +203,26 @@ class User
     public static function cryptPass($password)
     {
         return md5($password . sha1(\Setup::$SECRET_SALT));
+    }
+
+    /**
+     * Проверяет базу на предмет существование пользователя с заданным логином
+     *
+     *
+     * @return bool
+     */
+
+    function userExist()
+    {
+        $querry = "SELECT *  
+                   FROM $this->table
+                   WHERE   name = '$this->login'
+                ;";
+
+        $result = $this->adapter->sqlExec($querry);
+        $result = $result->fetchAll();
+
+        return $result;
     }
 
 

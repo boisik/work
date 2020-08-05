@@ -18,7 +18,8 @@ class User
         $login,
         $name,
         $email,
-        $table = "users";
+        $table = "users",
+        $importantFields = array('login','name','email','password');
 
     function __construct()
     {
@@ -31,7 +32,8 @@ class User
      * @param string $password - пароль в открытом виде
      * @return void
      */
-    public function setPass($password){
+    public function setPass($password)
+    {
         $this->password = $password;//self::cryptPass($password);
     }
 
@@ -41,7 +43,8 @@ class User
      * @param string $name - имя пользователя
      * @return void
      */
-    public function setLogin($login){
+    public function setLogin($login)
+    {
         $this->login = $login;
     }
 
@@ -51,12 +54,52 @@ class User
      * @param string $password - пароль в открытом виде
      * @return void
      */
-    public function setName($name){
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
-    public function setEmail($email){
+    public function setEmail($email)
+    {
         $this->email = $email;
+    }
+
+    public function getEmail()
+    {
+       return $this->email;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function getTableName(){
+        return $this->table;
+    }
+
+    /**
+     * Экранирует данные
+     *
+     */
+    function screenImportantFields()
+    {
+        foreach ($this->importantFields as $one){
+            if (isset($this->$one)){
+                $this->$one = stripslashes($this->$one);
+                $this->$one = htmlspecialchars($this->$one);
+            }
+        }
     }
 
     /**
@@ -99,8 +142,6 @@ class User
         }
 
         if($userExist[0]['password'] != $this->cryptPass($this->password)){
-            var_dump($userExist[0]['password']);
-            var_dump($this->cryptPass($this->password));
             $validationResult['errors']['wrongPass'] = "Пароль указан неверно";
         }
 
@@ -223,6 +264,15 @@ class User
         $result = $result->fetchAll();
 
         return $result;
+    }
+
+    function userCanAuth(){
+        $userExist = $this->userExist();
+        if($userExist[0]['password'] != $this->cryptPass($this->password)){
+            return false;
+        }
+        return true;
+
     }
 
 

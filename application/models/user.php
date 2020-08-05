@@ -192,27 +192,8 @@ class User
 
     public function createUser()
     {
+        $this->screenImportantFields();
         $validationResult = $this->checkBaseData();
-        $userExist = $this->userExist();
-        $this->email = stripslashes($this->email);
-        $this->email = htmlspecialchars($this->email);
-        $this->name = stripslashes($this->name);
-        $this->name = htmlspecialchars($this->name);
-        if (empty($this->email) || !preg_match('/^.+\@\S+\.\S+$/', $this->email)) {
-            $validationResult['errors']['emptyEmail'] = "Введите корректный Адрес электронной почты";
-            return $validationResult['errors'];
-        }
-
-        if (empty($this->name)) {
-            $validationResult['errors']['emptyName'] = "Введите Имя";
-            return $validationResult['errors'];
-        }
-        if (!empty($userExist)){
-            $validationResult['errors']['UserExist'] = "Логин занят другим пользователем";
-            return $validationResult['errors'];
-        }
-        $validationResult['noErrors'] = !isset($validationResult['errors']) ? true : false;
-        if ($validationResult['noErrors'] == true){
 
             $pass = $this->cryptPass($this->password);
 
@@ -226,9 +207,10 @@ class User
                   ;";
 
             $result = $this->adapter->sqlExec($querry);
+
             return $validationResult['OK']= 'Регистрация прошла успешно';
-        }
-        return $validationResult['errors'];
+
+
 
 
     }
@@ -257,7 +239,7 @@ class User
     {
         $querry = "SELECT *  
                    FROM $this->table
-                   WHERE   name = '$this->login'
+                   WHERE   login = '$this->login'
                 ;";
 
         $result = $this->adapter->sqlExec($querry);
@@ -266,6 +248,7 @@ class User
         return $result;
     }
 
+
     function userCanAuth(){
         $userExist = $this->userExist();
         if($userExist[0]['password'] != $this->cryptPass($this->password)){
@@ -273,6 +256,22 @@ class User
         }
         return true;
 
+    }
+
+    /**
+     * обновляется хеш в таблице пользователей
+     * @param string $hash - случайная строка
+     */
+    function updateUserHash($hash)
+    {
+
+        $querry = "UPDATE  $this->table
+                   SET                   
+                   hash = '".$hash."',
+                               
+                   WHERE     login = '$this->login'       
+                  ;";
+        $this->adapter->sqlExec($querry);
     }
 
 

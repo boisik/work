@@ -7,6 +7,6 @@ return array (
     'DB_SOCKET' => NULL,
     'DB_NAME' => 'test',
     'DB_USER' => 'root',
-    'DB_PASS' => 'root',
+    'DB_PASS' => '',
 
 );

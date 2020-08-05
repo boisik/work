@@ -10,7 +10,7 @@ namespace Application\Models\Validation\Forms;
 use Application\Models\Validation\Abstracts\AbstractForm;
 
 
-class AuthForm extends AbstractForm
+class RegForm extends AbstractForm
 {
     /**
      * @return array  список правил
@@ -22,11 +22,20 @@ class AuthForm extends AbstractForm
         return array(
 
             "add_login"=>array(
-                 array('Application\\Models\\Validation\\Conditions\\Length'=>array('min' => '3','max' => '10')),
+                array('Application\\Models\\Validation\\Conditions\\Length'=>array('min' => '3','max' => '10')),
 
-             ),
+            ),
             "add_pass"=>array(
                 array('Application\\Models\\Validation\\Conditions\\Length'=>array('min' => '6','max' => '10')),
+
+            ),
+
+            "add_email"=>array(
+                array('Application\\Models\\Validation\\Conditions\\Email' => null)
+            ),
+
+            "add_name"=>array(
+                array('Application\\Models\\Validation\\Conditions\\Length'=>array('min' => '3','max' => '10')),
 
             ),
         );

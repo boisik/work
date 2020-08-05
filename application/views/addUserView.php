@@ -19,8 +19,8 @@
                 <input type="text" id="add_login" name="add_login" value=""/>
                 <label for="add_email">Введите адрес элекронной почты</label><br/>
                 <input type="text" id="add_email" name="add_email" value=""/>
-                <label for="add_password">Введите Пароль</label><br/>
-                <input type="text" id="add_password" name="add_password" value=""/>
+                <label for="add_pass">Введите Пароль</label><br/>
+                <input type="text" id="add_pass" name="add_pass" value=""/>
                 <input type="hidden" name="operation" value="adduser"/>
                 <input type="submit"/>
             </form>

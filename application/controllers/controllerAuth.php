@@ -37,7 +37,7 @@ class ControllerAuth extends Controller
                 $user = new \Application\Models\User();
                 $user->setLogin($login);
                 $user->setPass($pass);
-                //$result = $user->tryAuth();
+                $result = $user->tryAuth();
             }else{
                 $result = $errors;
             }

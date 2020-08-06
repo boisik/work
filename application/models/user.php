@@ -8,7 +8,7 @@
  */
 namespace Application\Models;
 use Application\Core\Helper;
-
+use Application\Core\Route;
 
 class User
 {
@@ -17,6 +17,7 @@ class User
         $password,
         $login,
         $name,
+        $hash,
         $email,
         $table = "users",
         $importantFields = array('login','name','email','password');
@@ -84,8 +85,19 @@ class User
         return $this->password;
     }
 
-    public function getTableName(){
+    public function getTableName()
+    {
         return $this->table;
+    }
+
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+    }
+
+    public function getHash()
+    {
+        return $this->hash;
     }
 
     /**
@@ -155,18 +167,11 @@ class User
      */
     function  tryAuth()
     {
-        $validationResult = $this->checkBaseData();
-        if ($validationResult['noErrors'] == true){
-            $validationResult = $this->checkAuthData($validationResult);
-        }
-        if ($validationResult['noErrors'] == true){
-
-            $hash = Helper::generateCode();
-
-            setcookie("user_hash", $hash, time()+60*60*24*30, "/", null, null, true); // httponly !!!
+        $hash = Helper::generateCode();
+        $this->updateUserHash($hash);
+        setcookie("user_hash", $hash, time()+60*60*24*30, "/", null, null, true); // httponly !!!
         return $validationResult['OK']= 'Авторизация прошла успешно';
-        }
-        return $validationResult['errors'];
+
     }
 
     /**
@@ -177,6 +182,15 @@ class User
         setcookie("user_hash","",time()-3600,"/");
 
         header("Location:".'/');
+    }
+
+    /**
+     * Получение хеша текущего юзера
+     * @return string
+     */
+    function getUserHash()
+    {
+        return $_COOKIE['user_hash'];
     }
 
     /**
@@ -193,7 +207,7 @@ class User
     public function createUser()
     {
         $this->screenImportantFields();
-        $validationResult = $this->checkBaseData();
+
 
             $pass = $this->cryptPass($this->password);
 
@@ -209,10 +223,6 @@ class User
             $result = $this->adapter->sqlExec($querry);
 
             return $validationResult['OK']= 'Регистрация прошла успешно';
-
-
-
-
     }
 
 
@@ -229,10 +239,9 @@ class User
     }
 
     /**
-     * Проверяет базу на предмет существование пользователя с заданным логином
+     * Проверяет базу на предмет существования пользователя с заданным логином
      *
-     *
-     * @return bool
+     * @return array
      */
 
     function userExist()
@@ -267,13 +276,61 @@ class User
 
         $querry = "UPDATE  $this->table
                    SET                   
-                   hash = '".$hash."',
-                               
+                   hash = '".$hash."'                                
                    WHERE     login = '$this->login'       
                   ;";
         $this->adapter->sqlExec($querry);
     }
 
+
+    /**
+     * загружает задание из бд
+     *
+     * @param int $id - идентификатор задачи
+     * @return User
+     */
+    function getByHash($hash)
+    {
+        $querry = "SELECT *  
+                   FROM $this->table
+                   WHERE   hash = '".$hash."'
+                ;";
+
+        $result = $this->adapter->sqlExec($querry);
+        $result = $result->fetchAll();
+
+        if(!empty($result)){
+            $this->setName($result[0]['name']);
+            $this->setHash($hash);
+
+
+        } else{
+            Route::ErrorPage403();
+        }
+
+    }
+
+    /**
+     * Обновляет данные об имени и пароле пользователя
+     *
+     * @param int $id - идентификатор задачи
+     * @return User
+     */
+    public function saveUser()
+    {
+        $this->screenImportantFields();
+        $pass = $this->cryptPass($this->password);
+        $hash = $this->getHash();
+        $querry = "UPDATE $this->table
+                   SET                 
+                   name       = '$this->name',
+                   password   = '".$pass."' 
+                   WHERE hash = '".$hash."'  
+                  ;";
+
+        $result = $this->adapter->sqlExec($querry);
+        return $result1['OK']= 'Сохранено';
+    }
 
 
 

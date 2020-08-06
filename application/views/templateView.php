@@ -34,8 +34,11 @@ use Application\Models\User;
             </a>
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="<?php Route::getUrl('auth');?>">Страница Авторизации</a>
+                <a class="dropdown-item" href="<?php Route::getUrl('Registration','AddUser');?>">Страница Регистрации</a>
                 <?php if(User::isAuth()):?>
                 <a class="dropdown-item" href="<?php Route::getUrl('auth','logout');?>">Выйти изучетной записи</a>
+                    <a class="dropdown-item" href="<?php Route::getUrl('userEdit','userEdit');?>">Изменить данные</a>
+
                 <?php endif; ?>
 
             </div>

@@ -12,7 +12,7 @@
         <fieldset>
             <legend>Регистрация</legend>
 
-            <form method="POST" id="addtask" data-action="adduser/">
+            <form method="POST" id="adduser" data-action="adduser/">
                 <label for="add_name">Введите имя </label><br/>
                 <input type="text" id="add_name" name="add_name" value=""/>
                 <label for="add_login">Введите Login</label><br/>

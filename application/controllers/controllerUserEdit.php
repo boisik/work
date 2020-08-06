@@ -8,33 +8,42 @@
 use Application\Core\Controller;
 use Application\Models\User;
 use Application\Core\Route;
+use Application\Models\Validation\DefaultValidator;
+use Application\Models\Validation\Forms\UserEditForm;
 class controllerUserEdit extends Controller
 {
 
-    function actionEditUser()
+    function actionUserEdit()
     {
         if(!User::isAuth()) Route::ErrorPage403();
-
-        $taskApi = new Application\Models\Taskapi();
-        $id = isset($_GET['id']) ? $_GET['id'] : '0';
-        $task = $taskApi->getByID($id);
-
-        if ($_POST['operation'] =='edittask'){
+        $user = new User();
+        $hash = $user->getUserHash();
+        $user->getByHash($hash);
 
 
-            $status = isset($_POST['add_status'])? "1":"0";
-            $text = filter_input(INPUT_POST, 'add_text');
-            $taskModified = new \Application\Models\Task();
-
-            $taskModified->setStatus($status);
-            $taskModified->setId($id);
-            $taskModified->addText($text);
-            $result = $taskModified->update($task);
-
+        if ($_POST['operation'] =='UserEdit'){
+            $userName = filter_input(INPUT_POST, 'add_name');
+            $password = filter_input(INPUT_POST, 'add_pass');
+            $UserEditForm = new UserEditForm();
+            $conditions = $UserEditForm->getConditions();
+            $messages = array(
+                "add_pass"=>'Не корректный пароль',
+                "add_name"=>'Не корректное имя',
+            );
+            $validator = new DefaultValidator($_POST,$conditions,$messages);
+            $validator->validate();
+            $errors = $validator->getErrors();
+            if (empty($errors)){
+               $user->setName($userName);
+               $user->setPass($password);
+               $result = $user->saveUser();
+            }else{
+                $result= $errors;
+            }
             $this->view->generate('resultView.php', 'answerView.php',$result);
 
         }else{
-            $this->view->generate('edittaskView.php', 'templateView.php',$task);
+            $this->view->generate('EditUserView.php', 'templateView.php',$user);
         }
     }
 

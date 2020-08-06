@@ -51,9 +51,9 @@ use Application\Models\User;
                Задачи
             </a>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="/">Список задач</a>
-                <a class="dropdown-item" href="<?php Route::getUrl('task','addtask');?>">Добавить задачу</a>
-
+                <a class="dropdown-item" href="<?php Route::getUrl('SqlTask1');?>">Первый запрос</a>
+                <a class="dropdown-item" href="<?php Route::getUrl('SqlTask2');?>">Второй запрос</a>
+                <a class="dropdown-item" href="<?php Route::getUrl('SqlTask2');?>">Третий Запрос</a>
             </div>
         </li>
     </ul>

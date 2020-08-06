@@ -27,13 +27,14 @@ class Helper
     }
 
     /**
-     * генерирует случайную строку
-     *
-     * @param int $lengh - длина требуемой строки
-     *
-     * @return string
-     */
-    public static function generateCode($lengh=7) {
+ * генерирует случайную строку
+ *
+ * @param int $lengh - длина требуемой строки
+ *
+ * @return string
+ */
+    public static function generateCode($lengh=7)
+    {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
         $code = "";
         $clen = strlen($chars) - 1;
@@ -43,7 +44,24 @@ class Helper
         return $code;
     }
 
+    /**
+     * генерирует таблицу на основании массива
+     *
+     * @param array $array
+     *
+     * @return string
+     */
+    public static function generateTable($array)
+    {
 
+        foreach ($array as $one){
+
+            foreach ($one as $key=>$value){
+                echo ($value.'&nbsp;'.'&nbsp;'.'&nbsp;'.'&nbsp;');
+            }
+            echo ('<br/>');
+        }
+    }
 
 
 

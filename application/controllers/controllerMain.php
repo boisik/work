@@ -13,7 +13,7 @@ class ControllerMain extends Controller
     function actionIndex()
     {
 
-        header("Location:".'/task');
+        header("Location:".'/Registration/AddUser');
 
     }
 }

@@ -40,6 +40,7 @@ class controllerRegistration extends Controller
                 $user->setPass($password);
 
                 $result = $user->createUser();
+
             }else{
                 $result = $errors;
             }

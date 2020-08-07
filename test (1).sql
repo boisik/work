@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Авг 03 2020 г., 06:18
+-- Время создания: Авг 07 2020 г., 04:59
 -- Версия сервера: 10.3.22-MariaDB
 -- Версия PHP: 7.3.17
 
@@ -33,31 +33,19 @@ CREATE TABLE `orders` (
   `price` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
 --
--- Структура таблицы `tasks`
+-- Дамп данных таблицы `orders`
 --
 
-CREATE TABLE `tasks` (
-  `id` int(11) NOT NULL,
-  `username` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `useremail` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `text` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` tinyint(1) DEFAULT 0,
-  `edited` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Дамп данных таблицы `tasks`
---
-
-INSERT INTO `tasks` (`id`, `username`, `useremail`, `text`, `status`, `edited`) VALUES
-(6, 'AAAALex', 'bbbb@mail.ru', 'custom1111 1', 0, 1),
-(7, 'Boris', 'zbzzanuda@test.com', '            customtextnew    ', 0, 1),
-(8, 'Viktor', 'superuser@super.loca', '         custom1111  ', 0, 0),
-(9, 'Harry', 'bbb@super.local', '         custom1111  ', 0, 0),
-(10, 'Aida', 'aidka@sobaka.com.ua', '      qazxsww!!!@@#  ', 0, 1);
+INSERT INTO `orders` (`id`, `user_id`, `price`) VALUES
+(1, 8, 456),
+(2, 8, 345),
+(3, 6, 467),
+(4, 4, 678),
+(5, 10, 666),
+(6, 10, 456),
+(7, 12, 55),
+(8, 8, 11111);
 
 -- --------------------------------------------------------
 
@@ -70,16 +58,23 @@ CREATE TABLE `users` (
   `name` varchar(9) NOT NULL,
   `password` varchar(100) NOT NULL,
   `login` varchar(10) DEFAULT NULL,
-  `email` varchar(55) NOT NULL
+  `email` varchar(55) NOT NULL,
+  `hash` varchar(55) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `password`, `login`, `email`) VALUES
-(1, 'yashka', 'c64be1bdd5440a33281f7d147dd0e6e5', NULL, ''),
-(6, '1111', 'e6f8005e935f529e6de56504b6bfe90d', NULL, 'dcsfd2ffg@vrvr.r4r');
+INSERT INTO `users` (`id`, `name`, `password`, `login`, `email`, `hash`) VALUES
+(1, 'yashka', 'c64be1bdd5440a33281f7d147dd0e6e5', NULL, '', ''),
+(7, 'qqqqqq2', '6a311704dad4edb45d3e24beefa748a1', 'qqqqqq', 'qqqqq@qq.er', 'wG36p9a'),
+(8, 'viktor', '1b8e4ea305fc77c2cbd7718f92d596a2', 'viktor', 'viktor@viktor.viktor', NULL),
+(9, 'fedot', '1b8e4ea305fc77c2cbd7718f92d596a2', 'fedot', 'fedotr@viktor.viktor', NULL),
+(10, 'Alex', '1b8e4ea305fc77c2cbd7718f92d596a2', 'Alex123', 'Alex@viktor.viktor', NULL),
+(11, 'Lina', '1b8e4ea305fc77c2cbd7718f92d596a2', 'Lina3123', 'Lina@viktor.viktor', NULL),
+(12, 'Swordwe', '1b8e4ea305fc77c2cbd7718f92d596a2', 'svs234', 'Linad@viktor.viktor', NULL),
+(13, 'Swordwe1', '8baea77f3a4339726cc63d334e13c31a', 'svs23433', 'viktor@viktor.viktor', NULL);
 
 --
 -- Индексы сохранённых таблиц
@@ -89,12 +84,6 @@ INSERT INTO `users` (`id`, `name`, `password`, `login`, `email`) VALUES
 -- Индексы таблицы `orders`
 --
 ALTER TABLE `orders`
-  ADD PRIMARY KEY (`id`);
-
---
--- Индексы таблицы `tasks`
---
-ALTER TABLE `tasks`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -111,19 +100,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT для таблицы `tasks`
---
-ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -207,7 +207,7 @@ class User
     public function createUser()
     {
         $this->screenImportantFields();
-
+       
 
             $pass = $this->cryptPass($this->password);
 
